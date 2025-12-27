@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const Login = ({ onLogin }) => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ identifier: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -11,10 +11,17 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
+      // Determine if identifier is email or employee ID
+      const isEmail = formData.identifier.includes('@');
+      const loginData = {
+        [isEmail ? 'email' : 'employeeId']: formData.identifier,
+        password: formData.password
+      };
+
       const response = await fetch('/api/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, password: formData.password })
+        body: JSON.stringify(loginData)
       });
       
       const data = await response.json();
@@ -42,14 +49,14 @@ const Login = ({ onLogin }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
+              Email or Employee ID
             </label>
             <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              type="text"
+              value={formData.identifier}
+              onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your email"
+              placeholder="Enter email or employee ID (e.g., admin@company.com or MMS_001)"
               required
             />
           </div>
