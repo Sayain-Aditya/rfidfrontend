@@ -11,5 +11,8 @@ export default defineConfig({
         changeOrigin: true
       }
     }
+  },
+  define: {
+    __API_URL__: JSON.stringify(process.env.NODE_ENV === 'production' ? 'https://rfidattendance-mu.vercel.app' : '')
   }
 })
