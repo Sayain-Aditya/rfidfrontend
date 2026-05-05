@@ -11,6 +11,7 @@ import EmployeeNoticeBoard from './components/EmployeeNoticeBoard';
 import AdminLeaveManagement from './components/AdminLeaveManagement';
 import AdminComplaintManagement from './components/AdminComplaintManagement';
 import AdminNoticeBoard from './components/AdminNoticeBoard';
+import AdminCalendar from './components/AdminCalendar';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -112,7 +113,8 @@ function App() {
     { id: 'attendance', label: 'Attendance', icon: '📋' },
     { id: 'leaves', label: 'Leaves', icon: '🏖️' },
     { id: 'complaints', label: 'Complaints', icon: '📝' },
-    { id: 'notice', label: 'Notice Board', icon: '📋' }
+    { id: 'notice', label: 'Notice Board', icon: '📋' },
+    { id: 'calendar', label: 'Calendar', icon: '📅' }
   ];
 
   const renderContent = () => {
@@ -131,6 +133,8 @@ function App() {
         return <AdminComplaintManagement />;
       case 'notice':
         return <AdminNoticeBoard />;
+      case 'calendar':
+        return <AdminCalendar />;
       default:
         return <Dashboard />;
     }

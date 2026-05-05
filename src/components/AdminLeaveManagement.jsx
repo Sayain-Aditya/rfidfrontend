@@ -57,6 +57,12 @@ const AdminLeaveManagement = () => {
     }
   };
 
+  const totalDays = (leave) => {
+    const start = new Date(leave.startDate);
+    const end = new Date(leave.endDate);
+    return Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -65,9 +71,36 @@ const AdminLeaveManagement = () => {
     );
   }
 
+  const stats = {
+    total: leaves.length,
+    approved: leaves.filter(l => l.status === 'APPROVED').length,
+    pending: leaves.filter(l => l.status === 'PENDING').length,
+    rejected: leaves.filter(l => l.status === 'REJECTED').length,
+    totalDays: leaves.filter(l => l.status === 'APPROVED').reduce((sum, l) => sum + totalDays(l), 0)
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Leave Management</h2>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500">
+          <p className="text-sm text-gray-600">Total Submitted</p>
+          <p className="text-2xl font-semibold text-gray-900">{stats.total}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500">
+          <p className="text-sm text-gray-600">Approved</p>
+          <p className="text-2xl font-semibold text-gray-900">{stats.approved}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-500">
+          <p className="text-sm text-gray-600">Pending</p>
+          <p className="text-2xl font-semibold text-gray-900">{stats.pending}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
+          <p className="text-sm text-gray-600">Rejected</p>
+          <p className="text-2xl font-semibold text-gray-900">{stats.rejected}</p>
+        </div>
+      </div>
 
       <div className="bg-white rounded-lg shadow-md">
         <div className="overflow-x-auto">

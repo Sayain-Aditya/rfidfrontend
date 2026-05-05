@@ -10,6 +10,10 @@ const UserManagement = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [nextEmployeeId, setNextEmployeeId] = useState('');
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordUserId, setPasswordUserId] = useState(null);
+  const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '' });
+  const [passwordMsg, setPasswordMsg] = useState('');
 
   const fetchNextEmployeeId = async () => {
     try {
@@ -491,6 +495,17 @@ const UserManagement = () => {
                       Edit
                     </button>
                     <button
+                      onClick={() => {
+                        setPasswordUserId(user._id);
+                        setPasswordData({ oldPassword: '', newPassword: '' });
+                        setPasswordMsg('');
+                        setShowPasswordModal(true);
+                      }}
+                      className="text-yellow-600 hover:text-yellow-900"
+                    >
+                      Password
+                    </button>
+                    <button
                       onClick={() => handleDelete(user._id)}
                       className="text-red-600 hover:text-red-900"
                     >
@@ -503,6 +518,65 @@ const UserManagement = () => {
           </table>
         </div>
       </div>
+      {showPasswordModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 className="text-lg font-medium mb-4">Change Password</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Old Password</label>
+                <input
+                  type="password"
+                  value={passwordData.oldPassword}
+                  onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">New Password</label>
+                <input
+                  type="password"
+                  value={passwordData.newPassword}
+                  onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+              {passwordMsg && (
+                <p className={`text-sm ${passwordMsg.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
+                  {passwordMsg}
+                </p>
+              )}
+            </div>
+            <div className="flex space-x-2 mt-4">
+              <button
+                onClick={async () => {
+                  try {
+                    const response = await fetch(`/api/user/change-password/${passwordUserId}`, {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(passwordData)
+                    });
+                    const data = await response.json();
+                    setPasswordMsg(data.message);
+                    if (data.success) setTimeout(() => setShowPasswordModal(false), 1500);
+                  } catch (error) {
+                    setPasswordMsg('Something went wrong');
+                  }
+                }}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+              >
+                Change
+              </button>
+              <button
+                onClick={() => setShowPasswordModal(false)}
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
