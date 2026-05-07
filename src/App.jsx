@@ -12,6 +12,7 @@ import AdminLeaveManagement from './components/AdminLeaveManagement';
 import AdminComplaintManagement from './components/AdminComplaintManagement';
 import AdminNoticeBoard from './components/AdminNoticeBoard';
 import AdminCalendar from './components/AdminCalendar';
+import ShiftManagement from './components/ShiftManagement';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -114,7 +115,8 @@ function App() {
     { id: 'leaves', label: 'Leaves', icon: '🏖️' },
     { id: 'complaints', label: 'Complaints', icon: '📝' },
     { id: 'notice', label: 'Notice Board', icon: '📋' },
-    { id: 'calendar', label: 'Calendar', icon: '📅' }
+    { id: 'calendar', label: 'Calendar', icon: '📅' },
+    { id: 'shifts', label: 'Shifts', icon: '🕐' }
   ];
 
   const renderContent = () => {
@@ -135,6 +137,8 @@ function App() {
         return <AdminNoticeBoard />;
       case 'calendar':
         return <AdminCalendar />;
+      case 'shifts':
+        return <ShiftManagement />;
       default:
         return <Dashboard />;
     }
